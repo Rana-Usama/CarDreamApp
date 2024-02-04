@@ -19,6 +19,7 @@ export const getLocalStCars = async () => {
 }
 
 export const getErrorByCode = (code) => {
+  console.log(code)
   if (code == "auth/email-already-exists")
     return "The email address you have entered is already registered. If this is your email, please sign in.";
   else if (code == "auth/email-already-in-use")
@@ -29,5 +30,9 @@ export const getErrorByCode = (code) => {
     return "The password you entered is incorrect. Please try again or reset your password if you've forgotten it.";
   else if (code == "auth/weak-password")
     return "Your password is too weak. Please create a stronger password with at least 6 characters.";
+  else if (code == "auth/invalid-login-credentials")
+    return "Your Email/Password is incorrect";
+  else if (code == "auth/too-many-requests")
+    return "Too many tries, try again after some time.";
   else return "Something went wrong, please try again.";
 };

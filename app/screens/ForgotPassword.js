@@ -10,6 +10,7 @@ import InputField from "../components/common/InputField";
 // config
 import Colors from "../config/Colors";
 import MyAppButton from "../components/common/MyAppButton";
+import {resetPassword} from "../api/auth";
 
 function ForgotPassword(props) {
   const [inputField, SetInputField] = useState([
@@ -24,6 +25,15 @@ function ForgotPassword(props) {
     tempfeilds[i].value = text;
     SetInputField(tempfeilds);
   };
+
+  const handleResetPassword = async() => {
+    try {
+      await resetPassword(inputField[0].value)
+      alert('Check your email to reset your password.')
+    } catch (error) {
+      alert(error?.message)
+    }
+  }
 
   return (
     <Screen style={styles.screen}>
@@ -61,7 +71,7 @@ function ForgotPassword(props) {
       </View>
 
       {/* Login Button */}
-      <MyAppButton title="Send OTP" />
+      <MyAppButton onPress={handleResetPassword} title="Send OTP" />
     </Screen>
   );
 }

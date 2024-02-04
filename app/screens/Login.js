@@ -116,39 +116,7 @@ function Login(props) {
       <MyAppButton onPress={handleLogin} />
 
       {/* Social Media Login */}
-      {/* <View
-        style={{
-          marginTop: RFPercentage(5),
-          justifyContent: "center",
-          alignItems: "center",
-          flexDirection: "row",
-        }}
-      >
-        <View
-          style={{
-            width: RFPercentage(6),
-            height: RFPercentage(0.1),
-            backgroundColor: Colors.lightGrey,
-          }}
-        />
-        <Text
-          style={{
-            color: Colors.darkGrey,
-            marginHorizontal: RFPercentage(0.7),
-            fontFamily: "Poppins_400Regular",
-            fontSize: RFPercentage(1.7),
-          }}
-        >
-          or login with
-        </Text>
-        <View
-          style={{
-            width: RFPercentage(6),
-            height: RFPercentage(0.1),
-            backgroundColor: Colors.lightGrey,
-          }}
-        />
-      </View> */}
+      {/* <Views */}
 
       {/* Social Media Icons */}
       {/* <View
