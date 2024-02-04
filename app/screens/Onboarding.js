@@ -6,8 +6,11 @@ import { LinearGradient } from "expo-linear-gradient";
 // components
 import Screen from "../components/Screen";
 
+
 // config
 import Colors from "../config/Colors";
+import {getCurrentUser} from "../utils/helpers";
+import LoadingModal from "../components/common/LoadingModal";
 
 const onboardingData = [
   {
@@ -29,9 +32,24 @@ const onboardingData = [
 
 function Onboarding(props) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [indicator, showIndicator] = useState(true);
+
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
+  const checkUserLogin = async () => {
+    showIndicator(true);
+    const user = await getCurrentUser();
+    if (!user) {
+      showIndicator(false);
+      // props.navigation.navigate("Login");
+      return;
+    }
+    showIndicator(false);
+    props.navigation.navigate("HomeTab");
+  };
+
   useEffect(() => {
+    checkUserLogin()
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 400,
@@ -110,6 +128,7 @@ function Onboarding(props) {
 
   return (
     <Screen style={styles.screen}>
+      <LoadingModal show={indicator}  />
       <Image style={{ width: RFPercentage(20), height: RFPercentage(8), marginTop: RFPercentage(3) }} source={require("../../assets/Images/logo.png")} />
 
       <Animated.View

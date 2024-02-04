@@ -10,6 +10,9 @@ import InputField from "../components/common/InputField";
 // config
 import Colors from "../config/Colors";
 import MyAppButton from "../components/common/MyAppButton";
+import LoadingModal from "../components/common/LoadingModal";
+import {signIn} from "../api/auth";
+import {getErrorByCode} from "../utils/helpers";
 
 function Login(props) {
   const [indicator, showIndicator] = useState(false);
@@ -32,18 +35,20 @@ function Login(props) {
     SetInputField(tempfeilds);
   };
 
-  const handleLogin = () => {
-    showIndicator(true);
+  const handleLogin = async() => {
+    showIndicator(true)
     let tempfeilds = [...inputField];
 
     if (tempfeilds[0].value === "" || tempfeilds[1].value === "") {
       alert("Please fill all the feilds to proceed");
-      showIndicator(false);
+      showIndicator(false)
       return true;
     }
     try {
+      await signIn(tempfeilds[0].value , tempfeilds[1].value)
+      props.navigation.navigate("HomeTab")
     } catch (error) {
-      alert("Error");
+      alert(getErrorByCode(error?.code));
     }
 
     showIndicator(false);
@@ -51,6 +56,7 @@ function Login(props) {
 
   return (
     <Screen style={styles.screen}>
+      <LoadingModal show={indicator}  />
       <View style={{ marginTop: RFPercentage(1), width: "90%", justifyContent: "center", alignItems: "center", alignSelf: "center", flexDirection: "row" }}>
         <TouchableOpacity activeOpacity={0.8} onPress={() => props.navigation.navigate("Onboarding")} style={{ position: "absolute", left: 0 }}>
           <Ionicons name="chevron-back" style={{ fontSize: RFPercentage(3.2) }} color={Colors.black} />
@@ -108,7 +114,7 @@ function Login(props) {
       </View>
 
       {/* Login Button */}
-      <MyAppButton onPress={() => props.navigation.navigate("HomeTab")} />
+      <MyAppButton onPress={handleLogin} />
 
       {/* Social Media Login */}
       <View

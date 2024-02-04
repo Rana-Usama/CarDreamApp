@@ -7,11 +7,15 @@ import { Ionicons } from "@expo/vector-icons";
 import Screen from "../components/Screen";
 import InputField from "../components/common/InputField";
 import MyAppButton from "../components/common/MyAppButton";
+import { signUp } from "../api/auth";
 
 // config
 import Colors from "../config/Colors";
+import LoadingModal from "../components/common/LoadingModal";
+import {getErrorByCode} from "../utils/helpers";
 
 function Signup(props) {
+  const [indicator, showIndicator] = useState(false);
   const [successModalVisible, setSuccessModalVisible] = useState(false);
 
   const [inputField, SetInputField] = useState([
@@ -40,22 +44,28 @@ function Signup(props) {
     SetInputField(tempfeilds);
   };
 
-  const handleLogin = () => {
-    showIndicator(true);
-    let tempfeilds = [...inputField];
-
-    if (tempfeilds[0].value === "" || tempfeilds[1].value === "" || tempfeilds[2].value === "" || tempfeilds[3].value === "") {
-      alert("Please fill all the feilds to proceed");
-      showIndicator(false);
-      return true;
-    }
-    setSuccessModalVisible(true);
+  const handleSignup = async() => {
     try {
+      showIndicator(true);
+      
+      let tempfeilds = [...inputField];
+      const userDetails = { firstName: tempfeilds[0].value, lastName: tempfeilds[1].value === "", email: tempfeilds[2].value, password: tempfeilds[3].value } 
+      
+      if (userDetails.firstName === "" || userDetails.lastName === "" || userDetails.email === "" || userDetails.password === "") {
+        alert("Please fill all the feilds to proceed");
+        showIndicator(false);
+        return;
+      }
+
+      await signUp(userDetails)
+      setSuccessModalVisible(true);
+      // props.navigation.navigate("HomeTab")
     } catch (error) {
-      alert("Error");
+      alert(getErrorByCode(error?.code));
+    } finally {
+      showIndicator(false);
     }
 
-    showIndicator(false);
   };
 
   const closeModal = () => {
@@ -65,6 +75,7 @@ function Signup(props) {
 
   return (
     <Screen style={styles.screen}>
+      <LoadingModal show={indicator} />
       <View style={{ marginTop: RFPercentage(1), width: "90%", justifyContent: "center", alignItems: "center", alignSelf: "center", flexDirection: "row" }}>
         <TouchableOpacity activeOpacity={0.8} onPress={() => props.navigation.navigate("Login")} style={{ position: "absolute", left: 0 }}>
           <Ionicons name="chevron-back" style={{ fontSize: RFPercentage(3.2) }} color={Colors.black} />
@@ -99,7 +110,7 @@ function Signup(props) {
       </View>
 
       {/* Signup Button */}
-      <MyAppButton title="Signup" onPress={() => setSuccessModalVisible(true)} />
+      <MyAppButton title="Signup" onPress={handleSignup} />
 
       {/* Social Media Login */}
       <View
@@ -137,7 +148,7 @@ function Signup(props) {
       </View>
 
       {/* Social Media Icons */}
-      <View
+      {/* <View
         style={{
           marginTop: RFPercentage(3),
           justifyContent: "center",
@@ -175,7 +186,7 @@ function Signup(props) {
             source={require("../../assets/Images/apple.png")}
           />
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       <View
         activeOpacity={0.8}
