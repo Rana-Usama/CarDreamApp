@@ -5,7 +5,7 @@ import { query } from "firebase/database";
 const carsRef = db.collection("cars");
 
 export const addCar = async (carDetails) => {
-  await carsRef.doc().set(carDetails);
+  return await carsRef.doc().set(carDetails);
 };
 
 export const updateCar = async (carDetails) => {

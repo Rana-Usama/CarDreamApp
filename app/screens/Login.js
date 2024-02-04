@@ -16,7 +16,6 @@ import {getErrorByCode} from "../utils/helpers";
 
 function Login(props) {
   const [indicator, showIndicator] = useState(false);
-
   const [inputField, SetInputField] = useState([
     {
       placeholder: "Username or Email",
@@ -117,7 +116,7 @@ function Login(props) {
       <MyAppButton onPress={handleLogin} />
 
       {/* Social Media Login */}
-      <View
+      {/* <View
         style={{
           marginTop: RFPercentage(5),
           justifyContent: "center",
@@ -149,10 +148,10 @@ function Login(props) {
             backgroundColor: Colors.lightGrey,
           }}
         />
-      </View>
+      </View> */}
 
       {/* Social Media Icons */}
-      <View
+      {/* <View
         style={{
           marginTop: RFPercentage(3),
           justifyContent: "center",
@@ -189,7 +188,7 @@ function Login(props) {
             source={require("../../assets/Images/apple.png")}
           />
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       <View
         activeOpacity={0.8}

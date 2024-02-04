@@ -113,7 +113,7 @@ function Signup(props) {
       <MyAppButton title="Signup" onPress={handleSignup} />
 
       {/* Social Media Login */}
-      <View
+      {/* <View
         style={{
           marginTop: RFPercentage(5),
           justifyContent: "center",
@@ -145,7 +145,7 @@ function Signup(props) {
             backgroundColor: Colors.lightGrey,
           }}
         />
-      </View>
+      </View> */}
 
       {/* Social Media Icons */}
       {/* <View

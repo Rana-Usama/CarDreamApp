@@ -31,6 +31,7 @@ const CustomTabBar = ({ state, descriptors, navigation, props }) => {
               justifyContent: "center",
               alignItems: "center",
             }}
+            onPress={() => navigation.navigate("AddCar")}
           >
             <LinearGradient
               colors={[Colors.primary, "#213EC3"]}

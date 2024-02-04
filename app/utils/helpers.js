@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-import { USER } from '../constants/constants'
+import { CARS, USER } from '../constants/constants'
 
 export const saveCurrentUser = (value) => AsyncStorage.setItem(USER, JSON.stringify(value))
 
@@ -10,6 +10,13 @@ export const getCurrentUser = async () => {
 }
 
 export const removeCurrentUser = () => AsyncStorage.removeItem(USER)
+
+export const saveLocalStCars = (value) => AsyncStorage.setItem(CARS, JSON.stringify(value))
+
+export const getLocalStCars = async () => {
+  const userDetails = await AsyncStorage.getItem(CARS)
+  return JSON.parse(userDetails)
+}
 
 export const getErrorByCode = (code) => {
   if (code == "auth/email-already-exists")

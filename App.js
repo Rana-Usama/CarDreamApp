@@ -19,6 +19,7 @@ import AddCar from "./app/screens/AddCar";
 
 //screens
 import Colors from "./app/config/Colors";
+import Profile from "./app/screens/Profile";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -68,12 +69,11 @@ export default function App() {
       />
 
       <Tab.Screen
-        name="More"
-        component={Home}
+        name="Profile"
+        component={Profile}
         options={{
           header: () => null,
-
-          tabBarIcon: ({ color }) => <AntDesign name="bars" color={color} style={{ fontSize: RFPercentage(3.5) }} />,
+          tabBarIcon: ({ color }) => <AntDesign name="user" color={color} style={{ fontSize: RFPercentage(3.5) }} />,
         }}
       />
     </Tab.Navigator>

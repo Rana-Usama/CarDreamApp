@@ -266,8 +266,9 @@ function AddCar({ navigation }) {
         return
       }
       
-      await addCar(data)
-      navigation.navigate("HomeTab")
+      const res = await addCar(data)
+      console.log('resss', res)
+      navigation.navigate("Home", {images: selectedImages[0]})
 
     } catch (error) {
       alert(error?.message)
@@ -512,7 +513,7 @@ function AddCar({ navigation }) {
           >
             <TextInput
               multiline={true}
-              onChange={(value) => setComment(value)}
+              onChangeText={(value) => setComment(value)}
               placeholder='Comments'
             />
           </View>

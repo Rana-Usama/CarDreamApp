@@ -5,7 +5,7 @@ import {
   signOut,
 } from 'firebase/auth'
 import { db, firebaseAuth } from '.'
-import { getCurrentUser, saveCurrentUser } from '../utils/helpers'
+import { getCurrentUser, removeCurrentUser, saveCurrentUser } from '../utils/helpers'
 import { collection, getDocs, where, query, updateDoc, doc } from 'firebase/firestore'
 
 const userRef = db.collection('users').doc()
@@ -33,6 +33,7 @@ export const signIn = async (email, password) => {
 
 export const signOutUser = async () => {
   await signOut(firebaseAuth)
+  await removeCurrentUser()
 }
 
 export const updateUser = async (userDetails) => {

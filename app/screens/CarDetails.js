@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, ImageBackground, Image, StatusBar } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, ImageBackground, Image, StatusBar, Linking } from "react-native";
 import Swiper from "react-native-swiper";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { Ionicons } from "@expo/vector-icons";
@@ -11,10 +11,14 @@ import MyAppButton from "../components/common/MyAppButton";
 
 // config
 import Colors from "../config/Colors";
+import {useRoute} from "@react-navigation/native";
 
 function Home(props) {
+  const [car, setCar] = useState({});
+
+  const {params} = useRoute()
+
   useEffect(() => {
-    // Set the status bar color to black
     StatusBar.setBarStyle("dark-content");
     if (Platform.OS === "android") {
       StatusBar.setBackgroundColor(Colors.white);
@@ -28,7 +32,7 @@ function Home(props) {
     require("../../assets/Images/cv6.jpg"),
   ];
 
-  const details = [
+  const [details, setDetails] = useState([
     {
       t1: "Registered in",
       t2: "Karbala",
@@ -53,8 +57,10 @@ function Home(props) {
       t1: "Ad ID",
       t2: "837483",
     },
-  ];
+  ]);
 
+  const [selectedFeatures, setSlectedFeatures] = useState([])
+   
   const features = [
     {
       t1: "Air Bag",
@@ -106,13 +112,54 @@ function Home(props) {
     },
   ];
 
+  const updateCarDetails = (slectedCar) => {
+    const copyDetails = [...details]
+    copyDetails[0].t2 = slectedCar.state
+    copyDetails[1].t2 = slectedCar.engineCapacity
+    copyDetails[2].t2 = slectedCar.carType
+    copyDetails[3].t2 = slectedCar.exteriorColor
+    copyDetails[4].t2 = slectedCar.assembly
+    copyDetails[5].t2 = slectedCar.docId
+    
+    const selectedFeatures = [...slectedCar.features]
+    const filteredFeatures = [...features].map(feature => {
+      if (selectedFeatures.includes(feature.t1) && selectedFeatures.includes(feature.t2)) {
+         return { t1: feature.t1, s1: feature.s1, t2: feature.t2, s2: feature.s2 };
+      } else if (selectedFeatures.includes(feature.t2)) {
+         return { t2: feature.t2, s2: feature.s2 };
+      }  else if (selectedFeatures.includes(feature.t1)) {
+        return { t1: feature.t1, s1: feature.s1 };
+      } else {
+         return null;
+      }
+    }).filter(Boolean);
+
+    setSlectedFeatures(filteredFeatures)
+    setCar(slectedCar)
+    setDetails(copyDetails)
+  }
+
+  useEffect(() => {
+    params?.slectedCar && updateCarDetails(params?.slectedCar)
+  }, [params])
+
+  const handleCallPress = (phoneNumber) => {
+    const phoneNumberToCall = `tel:${phoneNumber}`;
+    Linking.openURL(phoneNumberToCall);
+  };
+  
+  const handleWhatsAppPress = (phoneNumber) => {
+    const whatsappNumber = `whatsapp://send?phone=${phoneNumber}`;
+    Linking.openURL(whatsappNumber);
+  };
+
   return (
     <View style={styles.screen}>
       <ScrollView style={{ flex: 1, width: "100%" }}>
         <Swiper style={styles.swiperContainer} showsButtons={false} autoplay={false} dotStyle={styles.dot} activeDotStyle={styles.activeDot}>
-          {carImages.map((image, index) => (
+          {car?.images?.length > 0 ? car?.images.map((image, index) => (
             <View key={index} style={styles.slide}>
-              <ImageBackground source={image} style={styles.image} resizeMode="cover">
+              <ImageBackground source={{uri: image}} style={styles.image} resizeMode="cover">
                 <View style={{ marginTop: RFPercentage(7), width: "95%", justifyContent: "flex-start", alignItems: "center", flexDirection: "row" }}>
                   <TouchableOpacity activeOpacity={0.8} onPress={() => props.navigation.navigate("Home")} style={styles.iconContainer}>
                     <Ionicons name="chevron-back" style={styles.icon} />
@@ -120,35 +167,39 @@ function Home(props) {
                 </View>
               </ImageBackground>
             </View>
-          ))}
+          )) : 
+          <View style={styles.slide}>
+            <Text>No Image Available</Text>
+          </View>}
         </Swiper>
         <View style={{ width: "90%", justifyContent: "center", alignItems: "flex-start", alignSelf: "center", marginTop: RFPercentage(1) }}>
           <View style={{ width: "100%", justifyContent: "flex-start", alignItems: "center", flexDirection: "row" }}>
-            <Text style={{ fontSize: RFPercentage(2.8), fontFamily: "Poppins_500Medium", color: Colors.black }}>Honda Civic X</Text>
+            <Text style={{ fontSize: RFPercentage(2.8), fontFamily: "Poppins_500Medium", color: Colors.black }}>{car?.carName}</Text>
 
             {/* Location */}
             <View style={{ position: "absolute", right: 0, flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
               <Image style={{ width: RFPercentage(2), height: RFPercentage(2) }} source={require("../../assets/Images/lg.png")} />
-              <Text style={{ marginHorizontal: RFPercentage(0.5), color: Colors.grey, fontSize: RFPercentage(1.7), fontFamily: "Poppins_400Regular" }}>Basra</Text>
+              <Text style={{ marginHorizontal: RFPercentage(0.5), color: Colors.grey, fontSize: RFPercentage(1.7), fontFamily: "Poppins_400Regular" }}>{car?.sellerAddress}</Text>
             </View>
           </View>
-          <Text style={{ fontSize: RFPercentage(2.4), fontFamily: "Poppins_500Medium", color: Colors.primary, marginVertical: RFPercentage(0.2) }}>$5000</Text>
+          <Text style={{ fontSize: RFPercentage(2.4), fontFamily: "Poppins_500Medium", color: Colors.primary, marginVertical: RFPercentage(0.2) }}>${car?.price}</Text>
           <View style={{ width: "100%", marginTop: RFPercentage(2.5), justifyContent: "space-between", alignItems: "center", flexDirection: "row" }}>
             <View style={{ justifyContent: "center", alignItems: "center" }}>
               <Image style={{ width: RFPercentage(3), height: RFPercentage(3) }} source={require("../../assets/Images/cb.png")} />
-              <Text style={{ marginVertical: RFPercentage(1), fontSize: RFPercentage(1.6), fontFamily: "Poppins_400Regular", color: Colors.darkGrey2 }}>2023</Text>
+              <Text style={{ marginVertical: RFPercentage(1), fontSize: RFPercentage(1.6), fontFamily: "Poppins_400Regular", color: Colors.darkGrey2 }}>{car?.modalNumber}</Text>
             </View>
             <View style={{ justifyContent: "center", alignItems: "center" }}>
               <Image style={{ width: RFPercentage(3), height: RFPercentage(3) }} source={require("../../assets/Images/mb.png")} />
-              <Text style={{ marginVertical: RFPercentage(1), fontSize: RFPercentage(1.6), fontFamily: "Poppins_400Regular", color: Colors.darkGrey2 }}>10,000 KM</Text>
+              <Text style={{ marginVertical: RFPercentage(1), fontSize: RFPercentage(1.6), fontFamily: "Poppins_400Regular", color: Colors.darkGrey2 }}>
+                {car?.kmDriver} KM</Text>
             </View>
             <View style={{ justifyContent: "center", alignItems: "center" }}>
               <Image style={{ width: RFPercentage(3), height: RFPercentage(3) }} source={require("../../assets/Images/pb.png")} />
-              <Text style={{ marginVertical: RFPercentage(1), fontSize: RFPercentage(1.6), fontFamily: "Poppins_400Regular", color: Colors.darkGrey2 }}>Petrol</Text>
+              <Text style={{ marginVertical: RFPercentage(1), fontSize: RFPercentage(1.6), fontFamily: "Poppins_400Regular", color: Colors.darkGrey2 }}>{car?.engineType}</Text>
             </View>
             <View style={{ justifyContent: "center", alignItems: "center" }}>
               <Image style={{ width: RFPercentage(3), height: RFPercentage(3) }} source={require("../../assets/Images/gb.png")} />
-              <Text style={{ marginVertical: RFPercentage(1), fontSize: RFPercentage(1.6), fontFamily: "Poppins_400Regular", color: Colors.darkGrey2 }}>Automatic</Text>
+              <Text style={{ marginVertical: RFPercentage(1), fontSize: RFPercentage(1.6), fontFamily: "Poppins_400Regular", color: Colors.darkGrey2 }}>{car?.type}</Text>
             </View>
           </View>
 
@@ -167,19 +218,19 @@ function Home(props) {
           <View style={{ width: "100%", marginTop: RFPercentage(1.5), flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
             <View style={{ width: "80%", flexDirection: "row", justifyContent: "flex-start", alignItems: "flex-start" }}>
               <Image style={{ width: RFPercentage(2.2), height: RFPercentage(2.2) }} source={require("../../assets/Images/lg.png")} />
-              <Text style={{ marginLeft: RFPercentage(1), color: Colors.darkGrey2, fontSize: RFPercentage(1.7), fontFamily: "Poppins_400Regular" }}>43119 Nigel Path Al-Anbar, Governorate</Text>
+              <Text style={{ marginLeft: RFPercentage(1), color: Colors.darkGrey2, fontSize: RFPercentage(1.7), fontFamily: "Poppins_400Regular" }}>{car.sellerAddress}</Text>
             </View>
           </View>
 
           <View style={{ width: "80%", marginTop: RFPercentage(1.5), flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
-            <TouchableOpacity activeOpacity={0.8}>
+            <TouchableOpacity onPress={() => handleCallPress(car.sellerContactNumber)} activeOpacity={0.8}>
               <Image style={{ width: RFPercentage(5), height: RFPercentage(5) }} source={require("../../assets/Images/call.png")} />
             </TouchableOpacity>
             <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
               <Text style={{ marginLeft: RFPercentage(1), color: Colors.darkGrey2, fontSize: RFPercentage(1.8), fontFamily: "Poppins_400Regular" }}>Call with seller</Text>
             </View>
             <View style={{ position: "absolute", right: 0, flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-              <TouchableOpacity activeOpacity={0.8}>
+              <TouchableOpacity onPress={() => handleWhatsAppPress(car.sellerContactNumber)} activeOpacity={0.8}>
                 <Image style={{ width: RFPercentage(5), height: RFPercentage(5) }} source={require("../../assets/Images/whatsapp.png")} />
               </TouchableOpacity>
               <Text style={{ marginLeft: RFPercentage(1), color: Colors.darkGrey2, fontSize: RFPercentage(1.8), fontFamily: "Poppins_400Regular" }}>Whatsapp</Text>
@@ -192,7 +243,7 @@ function Home(props) {
           </View>
           <View style={{ marginTop: RFPercentage(1), flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
             <Text style={{ color: Colors.darkGrey2, fontSize: RFPercentage(1.7), fontFamily: "Poppins_400Regular" }}>
-              Car is in premium condition. Anyone who wants to buy can contact me on the given number below.
+              {car.comment}
             </Text>
           </View>
 
@@ -201,16 +252,16 @@ function Home(props) {
             <Text style={{ color: Colors.black, fontSize: RFPercentage(2.2), fontFamily: "Poppins_500Medium" }}>Features</Text>
           </View>
 
-          {features.map((item, i) => (
-            <View key={i} style={{ width: "100%", justifyContent: "flex-start", alignItems: "center", flexDirection: "row", marginTop: !i == 0 ? RFPercentage(3) : RFPercentage(1.5) }}>
-              <View style={{ width: "50%", flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
-                <Image style={{ width: RFPercentage(3), height: RFPercentage(3) }} source={item.s1} />
-                <Text style={{ color: Colors.darkGrey2, fontSize: RFPercentage(1.7), fontFamily: "Poppins_400Regular", marginLeft: RFPercentage(1.5) }}>{item.t1}</Text>
-              </View>
-              <View style={{ width: "50%", position: "absolute", right: 0, flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
-                <Image style={{ width: RFPercentage(3), height: RFPercentage(3) }} source={item.s2} />
-                <Text style={{ color: Colors.darkGrey2, fontSize: RFPercentage(1.7), fontFamily: "Poppins_400Regular", marginLeft: RFPercentage(1.5) }}>{item.t2}</Text>
-              </View>
+          {selectedFeatures.map((item, i) => (
+            <View key={i} style={{flex: 1, width: "100%", justifyContent: "space-between", alignItems: "center", flexDirection: "row", marginTop: !i == 0 ? RFPercentage(3) : RFPercentage(1.5) }}>
+              {item?.t1 ? <View style={{  flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
+                  <Image style={{ width: RFPercentage(3), height: RFPercentage(3) }} source={item.s1} />
+                  <Text style={{ color: Colors.darkGrey2, fontSize: RFPercentage(1.7), fontFamily: "Poppins_400Regular", marginLeft: RFPercentage(1.5) }}>{item.t1}</Text>
+               </View> : null}
+              {item?.t2 ? <View style={{ width: '50%', flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
+                  <Image style={{ width: RFPercentage(3), height: RFPercentage(3) }} source={item.s2} />
+                  <Text style={{ color: Colors.darkGrey2, fontSize: RFPercentage(1.7), fontFamily: "Poppins_400Regular", marginLeft: RFPercentage(1.5) }}>{item.t2}</Text>
+               </View> : null}
             </View>
           ))}
         </View>
