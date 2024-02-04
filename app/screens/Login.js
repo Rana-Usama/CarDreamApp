@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image, Platform } from "react-native";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { Ionicons } from "@expo/vector-icons";
+import ToastManager, { Toast } from "toastify-react-native";
 
 // components
 import Screen from "../components/Screen";
@@ -45,17 +46,19 @@ function Login(props) {
     }
     try {
       await signIn(tempfeilds[0].value, tempfeilds[1].value);
-      props.navigation.navigate("HomeTab");
+      props.navigation.navigate("Home");
     } catch (error) {
-      alert(getErrorByCode(error?.code));
-      console.log("\n\n\n\n\n\n\n\nCatch error", error);
+      // alert(getErrorByCode(error?.code));
+      Toast.error(getErrorByCode(error?.code))
+      console.log("\n\n\n\n\n\n\n\nCatch error22222", error);
     }
-
+    
     showIndicator(false);
   };
 
   return (
     <Screen style={styles.screen}>
+     <ToastManager textStyle={{ fontSize: RFPercentage(2), maxWidth: '90%' }} />
       <LoadingModal show={indicator} />
       <View style={{ marginTop: RFPercentage(1), width: "90%", justifyContent: "center", alignItems: "center", alignSelf: "center", flexDirection: "row" }}>
         <TouchableOpacity activeOpacity={0.8} onPress={() => props.navigation.navigate("Onboarding")} style={{ position: "absolute", left: 0 }}>

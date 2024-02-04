@@ -34,6 +34,7 @@ function AddCar({ navigation }) {
   const [comment, setComment] = useState('')
   const [imageLoading, setImageLoading] = useState(false)
   const [indicator, showIndicator] = useState(false)
+  const [imageLengthWarning, setImageLengthWarning] = useState('')
 
   const toggleFeatures = () => {
     setFeatures(!features)
@@ -64,6 +65,9 @@ function AddCar({ navigation }) {
         const imgURL = await uploadImage(result.uri)
         setSelectedImages([...selectedImages, imgURL])
       }
+
+      selectedImages.length === 5 && setImageLengthWarning('You can only select up to 6 images')
+
     } catch (error) {
       console.error('Error picking images', error)
     } finally {
@@ -75,6 +79,7 @@ function AddCar({ navigation }) {
     const updatedImages = [...selectedImages]
     updatedImages.splice(index, 1)
     setSelectedImages(updatedImages)
+    selectedImages.length !== 5 && setImageLengthWarning('')
   }
 
   // Car Details
@@ -345,6 +350,7 @@ function AddCar({ navigation }) {
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={pickImages}
+          disabled={!!imageLengthWarning}
           style={{
             marginTop: RFPercentage(2),
             backgroundColor: 'rgba(242, 242, 242, 0.9)',
@@ -368,6 +374,16 @@ function AddCar({ navigation }) {
             }}
           >
             Add Photos
+          </Text>
+          <Text
+            style={{
+              fontSize: RFPercentage(1.7),
+              marginTop: RFPercentage(0.6),
+              color: Colors.secondary,
+              fontFamily: 'Poppins_400Regular',
+            }}
+          >
+            {imageLengthWarning}
           </Text>
         </TouchableOpacity>
 

@@ -11,6 +11,7 @@ import InputField from "../components/common/InputField";
 import Colors from "../config/Colors";
 import MyAppButton from "../components/common/MyAppButton";
 import {resetPassword} from "../api/auth";
+import ToastManager, {Toast} from "toastify-react-native";
 
 function ForgotPassword(props) {
   const [inputField, SetInputField] = useState([
@@ -31,12 +32,14 @@ function ForgotPassword(props) {
       await resetPassword(inputField[0].value)
       alert('Check your email to reset your password.')
     } catch (error) {
-      alert(error?.message)
+      Toast.error(error?.message)
+      // alert(error?.message)
     }
   }
 
   return (
     <Screen style={styles.screen}>
+      <ToastManager textStyle={{ fontSize: RFPercentage(2), maxWidth: '90%' }} />
       <View style={{ marginTop: RFPercentage(1), width: "90%", justifyContent: "center", alignItems: "center", alignSelf: "center", flexDirection: "row" }}>
         <TouchableOpacity activeOpacity={0.8} onPress={() => props.navigation.navigate("Login")} style={{ position: "absolute", left: 0 }}>
           <Ionicons name="chevron-back" style={{ fontSize: RFPercentage(3.2) }} color={Colors.black} />

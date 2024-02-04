@@ -12,9 +12,11 @@ import MyAppButton from "../components/common/MyAppButton";
 // config
 import Colors from "../config/Colors";
 import {useRoute} from "@react-navigation/native";
+import LoadingIndicator from "../components/common/LoadingIndicator";
 
 function Home(props) {
   const [car, setCar] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const {params} = useRoute()
 
@@ -75,7 +77,7 @@ function Home(props) {
       s2: require("../../assets/Images/powersteering.png"),
     },
     {
-      t1: "Power Locks ",
+      t1: "Power Locks",
       s1: require("../../assets/Images/keylessentry.png"),
       t2: "Keyless Entry",
       s2: require("../../assets/Images/keylessentry.png"),
@@ -83,7 +85,7 @@ function Home(props) {
     {
       t1: "Power Mirrors",
       s1: require("../../assets/Images/powermirrors.png"),
-      t2: "Cruise Contro",
+      t2: "Cruise Control",
       s2: require("../../assets/Images/cruisecontrol.png"),
     },
     {
@@ -153,13 +155,23 @@ function Home(props) {
     Linking.openURL(whatsappNumber);
   };
 
+  console.log('car?.images', car?.images)
+
   return (
     <View style={styles.screen}>
       <ScrollView style={{ flex: 1, width: "100%" }}>
         <Swiper style={styles.swiperContainer} showsButtons={false} autoplay={false} dotStyle={styles.dot} activeDotStyle={styles.activeDot}>
           {car?.images?.length > 0 ? car?.images.map((image, index) => (
             <View key={index} style={styles.slide}>
-              <ImageBackground source={{uri: image}} style={styles.image} resizeMode="cover">
+              <ImageBackground source={{uri: image}} style={styles.image} resizeMode="cover" onLoadStart={() => setLoading(true)}
+              onLoadEnd={() => setLoading(false)} >
+
+              {loading && (
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                  <LoadingIndicator show={loading} />
+                </View>
+              )}
+
                 <View style={{ marginTop: RFPercentage(7), width: "95%", justifyContent: "flex-start", alignItems: "center", flexDirection: "row" }}>
                   <TouchableOpacity activeOpacity={0.8} onPress={() => props.navigation.navigate("Home")} style={styles.iconContainer}>
                     <Ionicons name="chevron-back" style={styles.icon} />

@@ -64,7 +64,12 @@ function Home(props) {
   }, [params]);
 
   useEffect(() => {
-    const filteredCars = selectedFilters.length > 0 || selectedCarTypes.length > 0 ? allCars.filter((car) => selectedFilters.includes(car.state) || selectedCarTypes.includes(car.carType)) : allCars;
+    const filteredCars = allCars.filter(car => {
+      const stateCondition = selectedFilters.length === 0 || selectedFilters.includes(car.state);
+      const carTypeCondition = selectedCarTypes.length === 0 || selectedCarTypes.includes(car.carType);
+
+      return stateCondition && carTypeCondition;
+    });
 
     setFilteredCars(filteredCars);
   }, [selectedFilters, selectedCarTypes]);

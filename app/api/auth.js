@@ -25,7 +25,7 @@ export const signUp = async (userData) => {
 
 export const signIn = async (email, password) => {
   await signInWithEmailAndPassword(firebaseAuth, email.toLowerCase(), password);
-  // await saveUser(email.toLowerCase())
+  await saveUser(email?.toLowerCase())
 };
 
 export const signOutUser = async () => {
@@ -61,7 +61,7 @@ const saveUser = async (email) => {
   const user = querySnapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
-    docId: doc?._key.path.segments[6],
+    docId: doc?._key?.path?.segments[6],
   }))[0];
 
   await saveCurrentUser(user);

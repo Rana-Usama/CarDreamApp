@@ -13,6 +13,7 @@ import { signUp } from "../api/auth";
 import Colors from "../config/Colors";
 import LoadingModal from "../components/common/LoadingModal";
 import {getErrorByCode} from "../utils/helpers";
+import ToastManager, {Toast} from "toastify-react-native";
 
 function Signup(props) {
   const [indicator, showIndicator] = useState(false);
@@ -49,7 +50,7 @@ function Signup(props) {
       showIndicator(true);
       
       let tempfeilds = [...inputField];
-      const userDetails = { firstName: tempfeilds[0].value, lastName: tempfeilds[1].value === "", email: tempfeilds[2].value, password: tempfeilds[3].value } 
+      const userDetails = { firstName: tempfeilds[0].value, lastName: tempfeilds[1].value, email: tempfeilds[2].value, password: tempfeilds[3].value } 
       
       if (userDetails.firstName === "" || userDetails.lastName === "" || userDetails.email === "" || userDetails.password === "") {
         alert("Please fill all the feilds to proceed");
@@ -59,9 +60,9 @@ function Signup(props) {
 
       await signUp(userDetails)
       setSuccessModalVisible(true);
-      // props.navigation.navigate("HomeTab")
     } catch (error) {
-      alert(getErrorByCode(error?.code));
+      Toast.error(getErrorByCode(error?.code))
+      // alert(getErrorByCode(error?.code));
     } finally {
       showIndicator(false);
     }
@@ -70,11 +71,12 @@ function Signup(props) {
 
   const closeModal = () => {
     setSuccessModalVisible(false);
-    props.navigation.navigate("Login");
+    props.navigation.navigate("HomeTab");
   };
 
   return (
     <Screen style={styles.screen}>
+       <ToastManager textStyle={{ fontSize: RFPercentage(2), maxWidth: '90%' }} />
       <LoadingModal show={indicator} />
       <View style={{ marginTop: RFPercentage(1), width: "90%", justifyContent: "center", alignItems: "center", alignSelf: "center", flexDirection: "row" }}>
         <TouchableOpacity activeOpacity={0.8} onPress={() => props.navigation.navigate("Login")} style={{ position: "absolute", left: 0 }}>

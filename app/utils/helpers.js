@@ -1,15 +1,15 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-import { CARS, USER } from '../constants/constants'
+import { CARS } from '../constants/constants'
 
-export const saveCurrentUser = (value) => AsyncStorage.setItem(USER, JSON.stringify(value))
+export const saveCurrentUser = (value) => AsyncStorage.setItem("USER", JSON.stringify(value))
 
 export const getCurrentUser = async () => {
-  const userDetails = await AsyncStorage.getItem(USER)
+  const userDetails = await AsyncStorage.getItem("USER")
   return JSON.parse(userDetails)
 }
 
-export const removeCurrentUser = () => AsyncStorage.removeItem(USER)
+export const removeCurrentUser = () => AsyncStorage.removeItem("USER")
 
 export const saveLocalStCars = (value) => AsyncStorage.setItem(CARS, JSON.stringify(value))
 

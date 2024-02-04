@@ -7,6 +7,7 @@ import { Poppins_300Light, Poppins_400Regular, Poppins_500Medium, Poppins_600Sem
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { AntDesign } from "@expo/vector-icons";
 import CustomTabBar from "./app/components/common/CustomTabBar";
+import ToastManager from 'toastify-react-native'
 
 // Screens
 import Onboarding from "./app/screens/Onboarding";
@@ -80,17 +81,20 @@ export default function App() {
   );
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Onboarding">
-        <Stack.Screen name="Onboarding" component={Onboarding} />
-        <Stack.Screen name="HomeTab" component={HomeTab} />
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Signup" component={Signup} />
-        <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-        <Stack.Screen name="CarDetails" component={CarDetails} />
-        <Stack.Screen name="AddCar" component={AddCar} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <>
+      <ToastManager textStyle={{ fontSize: RFPercentage(2) }} />
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Onboarding">
+          <Stack.Screen name="Onboarding" component={Onboarding} />
+          <Stack.Screen name="HomeTab" component={HomeTab} />
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Signup" component={Signup} />
+          <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+          <Stack.Screen name="CarDetails" component={CarDetails} />
+          <Stack.Screen name="AddCar" component={AddCar} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </>
   );
 }
 
