@@ -1,42 +1,43 @@
-import React, { useEffect, useState } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native'
-import { RFPercentage } from 'react-native-responsive-fontsize'
-import { Ionicons } from '@expo/vector-icons'
+import React, { useEffect, useState } from "react";
+import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
+import { RFPercentage } from "react-native-responsive-fontsize";
+import { Ionicons } from "@expo/vector-icons";
 
 // components
-import Screen from '../components/Screen'
+import Screen from "../components/Screen";
 
 // config
-import Colors from '../config/Colors'
-import MyAppButton from '../components/common/MyAppButton'
-import LoadingModal from '../components/common/LoadingModal'
-import {  signOutUser } from '../api/auth'
-import { getCurrentUser } from '../utils/helpers'
+import Colors from "../config/Colors";
+import MyAppButton from "../components/common/MyAppButton";
+import LoadingModal from "../components/common/LoadingModal";
+import { signOutUser } from "../api/auth";
+import { getCurrentUser } from "../utils/helpers";
 
 function Profile({ navigation }) {
-  const [indicator, showIndicator] = useState(false)
-  const [user, setUser] = useState({})
+  const [indicator, showIndicator] = useState(false);
+  const [user, setUser] = useState({});
 
   const handleLogout = async () => {
     try {
-      showIndicator(true)
-      await signOutUser()
-      navigation.navigate('Login')
-      showIndicator(false)
+      showIndicator(true);
+      await signOutUser();
+      navigation.navigate("Login");
+      showIndicator(false);
     } catch (error) {
     } finally {
-      showIndicator(false)
+      showIndicator(false);
     }
-  }
+  };
 
   const getUser = async () => {
-    const currentUser = await getCurrentUser()
-    setUser(currentUser)
-  }
+    const currentUser = await getCurrentUser();
+    console.log("\n\n\n\n\n\n\n\n\n\n\n", currentUser);
+    setUser(currentUser);
+  };
 
   useEffect(() => {
-    getUser()
-  }, [])
+    getUser();
+  }, []);
 
   return (
     <Screen style={styles.screen}>
@@ -44,55 +45,82 @@ function Profile({ navigation }) {
       <View
         style={{
           marginTop: RFPercentage(1),
-          width: '90%',
-          justifyContent: 'center',
-          alignItems: 'center',
-          alignSelf: 'center',
-          flexDirection: 'row',
+          width: "90%",
+          justifyContent: "center",
+          alignItems: "center",
+          alignSelf: "center",
+          flexDirection: "row",
         }}
       >
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={() => props.navigation.navigate('Onboarding')}
-          style={{ position: 'absolute', left: 0 }}
-        >
-          <Ionicons
-            name='chevron-back'
-            style={{ fontSize: RFPercentage(3.2) }}
-            color={Colors.black}
-          />
+        <TouchableOpacity activeOpacity={0.8} onPress={() => props.navigation.navigate("Onboarding")} style={{ position: "absolute", left: 0 }}>
+          <Ionicons name="chevron-back" style={{ fontSize: RFPercentage(3.2) }} color={Colors.black} />
         </TouchableOpacity>
-        <Image
-          style={{ width: RFPercentage(20), height: RFPercentage(8) }}
-          source={require('../../assets/Images/logo.png')}
-        />
+        <Image style={{ width: RFPercentage(18), height: RFPercentage(7) }} source={require("../../assets/Images/logo.png")} />
       </View>
 
-      <Text
+      <View style={{ width: "90%", justifyContent: "flex-start", alignItems: "center", flexDirection: "row" }}>
+        <Text
+          style={{
+            marginTop: RFPercentage(5),
+            color: Colors.black,
+            fontSize: RFPercentage(1.8),
+            fontFamily: "Poppins_500Medium",
+          }}
+        >
+          <Text style={{ color: Colors.grey, fontSize: RFPercentage(1.9), fontFamily: "Poppins_400Regular" }}>Email:</Text> {user.email}
+        </Text>
+      </View>
+      <View
         style={{
-          marginTop: RFPercentage(7),
-          color: Colors.black,
-          fontSize: RFPercentage(3.2),
-          fontFamily: 'Poppins_500Medium',
+          marginTop: RFPercentage(1),
+          width: "90%",
+          alignItems: "center",
+          justifyContent: "center",
+          alignSelf: "center",
+          backgroundColor: Colors.newInputFieldBorder,
+          height: RFPercentage(0.1),
         }}
-      >
-        Welcome {user.firstName} {user.firstName} {user.lastName}
-      </Text>
+      />
 
-      <View style={{ justifyContent: 'center', alignItems: 'center', width: '100%' }}></View>
+      <View style={{ width: "90%", justifyContent: "flex-start", alignItems: "center", flexDirection: "row" }}>
+        <Text
+          style={{
+            marginTop: RFPercentage(4),
+            color: Colors.black,
+            fontSize: RFPercentage(1.8),
+            fontFamily: "Poppins_500Medium",
+          }}
+        >
+          <Text style={{ color: Colors.grey, fontSize: RFPercentage(1.9), fontFamily: "Poppins_400Regular" }}>Username:</Text> {user.firstName} {user.lastName}
+        </Text>
+      </View>
+      <View
+        style={{
+          marginTop: RFPercentage(1),
+          width: "90%",
+          alignItems: "center",
+          justifyContent: "center",
+          alignSelf: "center",
+          backgroundColor: Colors.newInputFieldBorder,
+          height: RFPercentage(0.1),
+        }}
+      />
+
       {/* Logout Button */}
-      <MyAppButton title='Logout' onPress={handleLogout} />
+      <View style={{ position: "absolute", bottom: RFPercentage(8) }}>
+        <MyAppButton title="Logout" onPress={handleLogout} />
+      </View>
     </Screen>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
+    justifyContent: "flex-start",
+    alignItems: "center",
     backgroundColor: Colors.white,
   },
-})
+});
 
-export default Profile
+export default Profile;

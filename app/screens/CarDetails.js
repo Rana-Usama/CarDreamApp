@@ -3,22 +3,19 @@ import { View, Text, ScrollView, StyleSheet, TouchableOpacity, ImageBackground, 
 import Swiper from "react-native-swiper";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { Ionicons } from "@expo/vector-icons";
+import { useRoute } from "@react-navigation/native";
 
-// components
-import Screen from "../components/Screen";
-import InputField from "../components/common/InputField";
-import MyAppButton from "../components/common/MyAppButton";
+//components
+import LoadingIndicator from "../components/common/LoadingIndicator";
 
 // config
 import Colors from "../config/Colors";
-import {useRoute} from "@react-navigation/native";
-import LoadingIndicator from "../components/common/LoadingIndicator";
 
 function Home(props) {
   const [car, setCar] = useState({});
   const [loading, setLoading] = useState(false);
 
-  const {params} = useRoute()
+  const { params } = useRoute();
 
   useEffect(() => {
     StatusBar.setBarStyle("dark-content");
@@ -26,13 +23,6 @@ function Home(props) {
       StatusBar.setBackgroundColor(Colors.white);
     }
   }, []);
-  const carImages = [
-    require("../../assets/Images/cv1.jpg"),
-    require("../../assets/Images/cv4.jpg"),
-    require("../../assets/Images/cv3.jpg"),
-    require("../../assets/Images/cv2.jpg"),
-    require("../../assets/Images/cv6.jpg"),
-  ];
 
   const [details, setDetails] = useState([
     {
@@ -61,8 +51,8 @@ function Home(props) {
     },
   ]);
 
-  const [selectedFeatures, setSlectedFeatures] = useState([])
-   
+  const [selectedFeatures, setSlectedFeatures] = useState([]);
+
   const features = [
     {
       t1: "Air Bag",
@@ -114,75 +104,100 @@ function Home(props) {
     },
   ];
 
-  const updateCarDetails = (slectedCar) => {
-    const copyDetails = [...details]
-    copyDetails[0].t2 = slectedCar.state
-    copyDetails[1].t2 = slectedCar.engineCapacity
-    copyDetails[2].t2 = slectedCar.carType
-    copyDetails[3].t2 = slectedCar.exteriorColor
-    copyDetails[4].t2 = slectedCar.assembly
-    copyDetails[5].t2 = slectedCar.docId
-    
-    const selectedFeatures = [...slectedCar.features]
-    const filteredFeatures = [...features].map(feature => {
-      if (selectedFeatures.includes(feature.t1) && selectedFeatures.includes(feature.t2)) {
-         return { t1: feature.t1, s1: feature.s1, t2: feature.t2, s2: feature.s2 };
-      } else if (selectedFeatures.includes(feature.t2)) {
-         return { t2: feature.t2, s2: feature.s2 };
-      }  else if (selectedFeatures.includes(feature.t1)) {
-        return { t1: feature.t1, s1: feature.s1 };
-      } else {
-         return null;
-      }
-    }).filter(Boolean);
+  const updateCarDetails = (selectedCar) => {
+    const copyDetails = [...details];
 
-    setSlectedFeatures(filteredFeatures)
-    setCar(slectedCar)
-    setDetails(copyDetails)
-  }
+    // Append 'cc' to engine capacity if it's not already included
+    const engineCapacityWithCC = selectedCar.engineCapacity.endsWith("cc") ? selectedCar.engineCapacity : `${selectedCar.engineCapacity}cc`;
+
+    // Update the details array with the modified engine capacity
+    copyDetails.forEach((detail) => {
+      switch (detail.t1) {
+        case "Registered in":
+          detail.t2 = selectedCar.state;
+          break;
+        case "Engine Capacity":
+          detail.t2 = engineCapacityWithCC;
+          break;
+        case "Body Type":
+          detail.t2 = selectedCar.carType;
+          break;
+        case "Exterior Color":
+          detail.t2 = selectedCar.exteriorColor;
+          break;
+        case "Assembly":
+          detail.t2 = selectedCar.assembly;
+          break;
+        case "Ad ID":
+          detail.t2 = selectedCar.docId;
+          break;
+        default:
+          break;
+      }
+    });
+
+    const selectedFeatures = [...selectedCar.features];
+    const filteredFeatures = features
+      .map((feature) => {
+        if (selectedFeatures.includes(feature.t1) && selectedFeatures.includes(feature.t2)) {
+          return { t1: feature.t1, s1: feature.s1, t2: feature.t2, s2: feature.s2 };
+        } else if (selectedFeatures.includes(feature.t2)) {
+          return { t2: feature.t2, s2: feature.s2 };
+        } else if (selectedFeatures.includes(feature.t1)) {
+          return { t1: feature.t1, s1: feature.s1 };
+        }
+        return null;
+      })
+      .filter(Boolean);
+
+    setSlectedFeatures(filteredFeatures);
+    setCar(selectedCar);
+    setDetails(copyDetails);
+  };
 
   useEffect(() => {
-    params?.slectedCar && updateCarDetails(params?.slectedCar)
-  }, [params])
+    params?.slectedCar && updateCarDetails(params?.slectedCar);
+  }, [params]);
 
   const handleCallPress = (phoneNumber) => {
     const phoneNumberToCall = `tel:${phoneNumber}`;
     Linking.openURL(phoneNumberToCall);
   };
-  
+
   const handleWhatsAppPress = (phoneNumber) => {
     const whatsappNumber = `whatsapp://send?phone=${phoneNumber}`;
     Linking.openURL(whatsappNumber);
   };
 
-  console.log('car?.images', car?.images)
+  console.log("car?.images", car?.images);
 
   return (
     <View style={styles.screen}>
       <ScrollView style={{ flex: 1, width: "100%" }}>
         <Swiper style={styles.swiperContainer} showsButtons={false} autoplay={false} dotStyle={styles.dot} activeDotStyle={styles.activeDot}>
-          {car?.images?.length > 0 ? car?.images.map((image, index) => (
-            <View key={index} style={styles.slide}>
-              <ImageBackground source={{uri: image}} style={styles.image} resizeMode="cover" onLoadStart={() => setLoading(true)}
-              onLoadEnd={() => setLoading(false)} >
+          {car?.images?.length > 0 ? (
+            car?.images.map((image, index) => (
+              <View key={index} style={styles.slide}>
+                <ImageBackground source={{ uri: image }} style={styles.image} resizeMode="cover" onLoadStart={() => setLoading(true)} onLoadEnd={() => setLoading(false)}>
+                  {loading && (
+                    <View style={{ position: "absolute", top: RFPercentage(15), justifyContent: "center", alignItems: "center" }}>
+                      <LoadingIndicator show={loading} />
+                    </View>
+                  )}
 
-              {loading && (
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                  <LoadingIndicator show={loading} />
-                </View>
-              )}
-
-                <View style={{ marginTop: RFPercentage(7), width: "95%", justifyContent: "flex-start", alignItems: "center", flexDirection: "row" }}>
-                  <TouchableOpacity activeOpacity={0.8} onPress={() => props.navigation.navigate("Home")} style={styles.iconContainer}>
-                    <Ionicons name="chevron-back" style={styles.icon} />
-                  </TouchableOpacity>
-                </View>
-              </ImageBackground>
+                  <View style={{ marginTop: RFPercentage(7), width: "95%", justifyContent: "flex-start", alignItems: "center", flexDirection: "row" }}>
+                    <TouchableOpacity activeOpacity={0.8} onPress={() => props.navigation.navigate("Home")} style={styles.iconContainer}>
+                      <Ionicons name="chevron-back" style={styles.icon} />
+                    </TouchableOpacity>
+                  </View>
+                </ImageBackground>
+              </View>
+            ))
+          ) : (
+            <View style={styles.slide}>
+              <Text>No Image Available</Text>
             </View>
-          )) : 
-          <View style={styles.slide}>
-            <Text>No Image Available</Text>
-          </View>}
+          )}
         </Swiper>
         <View style={{ width: "90%", justifyContent: "center", alignItems: "flex-start", alignSelf: "center", marginTop: RFPercentage(1) }}>
           <View style={{ width: "100%", justifyContent: "flex-start", alignItems: "center", flexDirection: "row" }}>
@@ -202,8 +217,7 @@ function Home(props) {
             </View>
             <View style={{ justifyContent: "center", alignItems: "center" }}>
               <Image style={{ width: RFPercentage(3), height: RFPercentage(3) }} source={require("../../assets/Images/mb.png")} />
-              <Text style={{ marginVertical: RFPercentage(1), fontSize: RFPercentage(1.6), fontFamily: "Poppins_400Regular", color: Colors.darkGrey2 }}>
-                {car?.kmDriver} KM</Text>
+              <Text style={{ marginVertical: RFPercentage(1), fontSize: RFPercentage(1.6), fontFamily: "Poppins_400Regular", color: Colors.darkGrey2 }}>{car?.kmDriver} KM</Text>
             </View>
             <View style={{ justifyContent: "center", alignItems: "center" }}>
               <Image style={{ width: RFPercentage(3), height: RFPercentage(3) }} source={require("../../assets/Images/pb.png")} />
@@ -227,14 +241,14 @@ function Home(props) {
           <View style={{ marginTop: RFPercentage(2.5), flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
             <Text style={{ color: Colors.black, fontSize: RFPercentage(2.2), fontFamily: "Poppins_500Medium" }}>Seller Details</Text>
           </View>
-          <View style={{ width: "100%", marginTop: RFPercentage(1.5), flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
+          <View style={{ width: "100%", marginTop: RFPercentage(1.2), flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
             <View style={{ width: "80%", flexDirection: "row", justifyContent: "flex-start", alignItems: "flex-start" }}>
               <Image style={{ width: RFPercentage(2.2), height: RFPercentage(2.2) }} source={require("../../assets/Images/lg.png")} />
               <Text style={{ marginLeft: RFPercentage(1), color: Colors.darkGrey2, fontSize: RFPercentage(1.7), fontFamily: "Poppins_400Regular" }}>{car.sellerAddress}</Text>
             </View>
           </View>
 
-          <View style={{ width: "80%", marginTop: RFPercentage(1.5), flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
+          <View style={{ width: "80%", marginTop: RFPercentage(2), flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
             <TouchableOpacity onPress={() => handleCallPress(car.sellerContactNumber)} activeOpacity={0.8}>
               <Image style={{ width: RFPercentage(5), height: RFPercentage(5) }} source={require("../../assets/Images/call.png")} />
             </TouchableOpacity>
@@ -254,9 +268,7 @@ function Home(props) {
             <Text style={{ color: Colors.black, fontSize: RFPercentage(2.2), fontFamily: "Poppins_500Medium" }}>Seller Comments</Text>
           </View>
           <View style={{ marginTop: RFPercentage(1), flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-            <Text style={{ color: Colors.darkGrey2, fontSize: RFPercentage(1.7), fontFamily: "Poppins_400Regular" }}>
-              {car.comment}
-            </Text>
+            <Text style={{ color: Colors.darkGrey2, fontSize: RFPercentage(1.7), fontFamily: "Poppins_400Regular" }}>{car.comment}</Text>
           </View>
 
           {/* Features */}
@@ -265,15 +277,19 @@ function Home(props) {
           </View>
 
           {selectedFeatures.map((item, i) => (
-            <View key={i} style={{flex: 1, width: "100%", justifyContent: "space-between", alignItems: "center", flexDirection: "row", marginTop: !i == 0 ? RFPercentage(3) : RFPercentage(1.5) }}>
-              {item?.t1 ? <View style={{  flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
+            <View key={i} style={{ flex: 1, width: "100%", justifyContent: "space-between", alignItems: "center", flexDirection: "row", marginTop: !i == 0 ? RFPercentage(3) : RFPercentage(1.5) }}>
+              {item?.t1 ? (
+                <View style={{ flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
                   <Image style={{ width: RFPercentage(3), height: RFPercentage(3) }} source={item.s1} />
                   <Text style={{ color: Colors.darkGrey2, fontSize: RFPercentage(1.7), fontFamily: "Poppins_400Regular", marginLeft: RFPercentage(1.5) }}>{item.t1}</Text>
-               </View> : null}
-              {item?.t2 ? <View style={{ width: '50%', flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
+                </View>
+              ) : null}
+              {item?.t2 ? (
+                <View style={{ width: "50%", flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
                   <Image style={{ width: RFPercentage(3), height: RFPercentage(3) }} source={item.s2} />
                   <Text style={{ color: Colors.darkGrey2, fontSize: RFPercentage(1.7), fontFamily: "Poppins_400Regular", marginLeft: RFPercentage(1.5) }}>{item.t2}</Text>
-               </View> : null}
+                </View>
+              ) : null}
             </View>
           ))}
         </View>

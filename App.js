@@ -7,7 +7,7 @@ import { Poppins_300Light, Poppins_400Regular, Poppins_500Medium, Poppins_600Sem
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { AntDesign } from "@expo/vector-icons";
 import CustomTabBar from "./app/components/common/CustomTabBar";
-import ToastManager from 'toastify-react-native'
+import ToastManager from "toastify-react-native";
 
 // Screens
 import Onboarding from "./app/screens/Onboarding";
@@ -74,7 +74,7 @@ export default function App() {
         component={Profile}
         options={{
           header: () => null,
-          tabBarIcon: ({ color }) => <AntDesign name="user" color={color} style={{ fontSize: RFPercentage(3.5) }} />,
+          tabBarIcon: ({ color }) => <AntDesign name="profile" color={color} style={{ fontSize: RFPercentage(3.2) }} />,
         }}
       />
     </Tab.Navigator>

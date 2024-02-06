@@ -10,8 +10,8 @@ import InputField from "../components/common/InputField";
 // config
 import Colors from "../config/Colors";
 import MyAppButton from "../components/common/MyAppButton";
-import {resetPassword} from "../api/auth";
-import ToastManager, {Toast} from "toastify-react-native";
+import { resetPassword } from "../api/auth";
+import ToastManager, { Toast } from "toastify-react-native";
 
 function ForgotPassword(props) {
   const [inputField, SetInputField] = useState([
@@ -27,27 +27,27 @@ function ForgotPassword(props) {
     SetInputField(tempfeilds);
   };
 
-  const handleResetPassword = async() => {
+  const handleResetPassword = async () => {
     try {
-      await resetPassword(inputField[0].value)
-      alert('Check your email to reset your password.')
+      await resetPassword(inputField[0].value);
+      alert("Check your email to reset your password.");
     } catch (error) {
-      Toast.error(error?.message)
+      Toast.error(error?.message);
       // alert(error?.message)
     }
-  }
+  };
 
   return (
     <Screen style={styles.screen}>
-      <ToastManager textStyle={{ fontSize: RFPercentage(2), maxWidth: '90%' }} />
+      <ToastManager textStyle={{ fontSize: RFPercentage(2), maxWidth: "90%" }} />
       <View style={{ marginTop: RFPercentage(1), width: "90%", justifyContent: "center", alignItems: "center", alignSelf: "center", flexDirection: "row" }}>
         <TouchableOpacity activeOpacity={0.8} onPress={() => props.navigation.navigate("Login")} style={{ position: "absolute", left: 0 }}>
           <Ionicons name="chevron-back" style={{ fontSize: RFPercentage(3.2) }} color={Colors.black} />
         </TouchableOpacity>
-        <Image style={{ width: RFPercentage(20), height: RFPercentage(8) }} source={require("../../assets/Images/logo.png")} />
+        <Image style={{ width: RFPercentage(18), height: RFPercentage(7) }} source={require("../../assets/Images/logo.png")} />
       </View>
 
-      <Text style={{ marginTop: RFPercentage(5), color: Colors.black, fontSize: RFPercentage(2.8), fontFamily: "Poppins_500Medium" }}>Reset Your Password!</Text>
+      <Text style={{ marginTop: RFPercentage(5), color: Colors.black, fontSize: RFPercentage(2.5), fontFamily: "Poppins_500Medium" }}>Reset Your Password!</Text>
 
       {/* Input field */}
       <View style={{ justifyContent: "center", alignItems: "center", width: "100%" }}>

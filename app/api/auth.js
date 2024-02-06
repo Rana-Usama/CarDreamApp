@@ -25,7 +25,7 @@ export const signUp = async (userData) => {
 
 export const signIn = async (email, password) => {
   await signInWithEmailAndPassword(firebaseAuth, email.toLowerCase(), password);
-  await saveUser(email?.toLowerCase())
+  await saveUser(email?.toLowerCase());
 };
 
 export const signOutUser = async () => {
