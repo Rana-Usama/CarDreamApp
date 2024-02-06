@@ -46,7 +46,7 @@ function Login(props) {
     }
     try {
       await signIn(tempfeilds[0].value, tempfeilds[1].value);
-      props.navigation.navigate("Home");
+      props.navigation.navigate("HomeTab");
     } catch (error) {
       // alert(getErrorByCode(error?.code));
       Toast.error(getErrorByCode(error?.code))

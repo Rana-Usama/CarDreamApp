@@ -169,8 +169,6 @@ function Home(props) {
     Linking.openURL(whatsappNumber);
   };
 
-  console.log("car?.images", car?.images);
-
   return (
     <View style={styles.screen}>
       <ScrollView style={{ flex: 1, width: "100%" }}>

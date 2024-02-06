@@ -31,7 +31,6 @@ function Profile({ navigation }) {
 
   const getUser = async () => {
     const currentUser = await getCurrentUser();
-    console.log("\n\n\n\n\n\n\n\n\n\n\n", currentUser);
     setUser(currentUser);
   };
 

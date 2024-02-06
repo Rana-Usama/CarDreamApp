@@ -24,8 +24,9 @@ export const signUp = async (userData) => {
 };
 
 export const signIn = async (email, password) => {
-  await signInWithEmailAndPassword(firebaseAuth, email.toLowerCase(), password);
-  await saveUser(email?.toLowerCase());
+  const lowerEmail = email.toLowerCase();
+  await signInWithEmailAndPassword(firebaseAuth, lowerEmail, password);
+  await saveUser(lowerEmail);
 };
 
 export const signOutUser = async () => {
@@ -58,8 +59,8 @@ export const updateUserPassword = async (oldPass, newPass) => {
 
 const saveUser = async (email) => {
   const querySnapshot = await getDocs(query(collection(db, "users"), where("email", "==", email.toLowerCase())));
-  const user = querySnapshot.docs.map((doc) => ({
-    id: doc.id,
+  const user = querySnapshot?.docs?.map((doc) => ({
+    id: doc?.id,
     ...doc.data(),
     docId: doc?._key?.path?.segments[6],
   }))[0];

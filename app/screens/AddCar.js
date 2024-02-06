@@ -16,6 +16,7 @@ import { uploadImage } from "../api/helpers";
 import LoadingModal from "../components/common/LoadingModal";
 import LoadingIndicator from "../components/common/LoadingIndicator";
 import { addCar } from "../api/cars";
+import ToastManager, {Toast} from "toastify-react-native";
 
 function AddCar({ navigation }) {
   const [selectedImages, setSelectedImages] = useState([]);
@@ -44,6 +45,11 @@ function AddCar({ navigation }) {
 
   const pickImages = async () => {
     try {
+      if (imageLoading) {
+        Toast.warn("Please wait, while previous image is loading.")
+        return
+      }
+
       let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         aspect: [4, 3],
@@ -257,6 +263,7 @@ function AddCar({ navigation }) {
 
       const res = await addCar(data);
       console.log("resss", res);
+      Toast.success("Vehicle Successfully Added.")
       navigation.navigate("Home", { images: selectedImages[0] });
     } catch (error) {
       alert(error?.message);
@@ -267,6 +274,7 @@ function AddCar({ navigation }) {
 
   return (
     <Screen style={styles.screen}>
+      <ToastManager textStyle={{ fontSize: RFPercentage(2), maxWidth: '90%' }} />
       <LoadingModal show={indicator} />
       <ScrollView style={{ width: "100%" }} contentContainerStyle={{ width: "100%", alignItems: "center" }} stickyHeaderIndices={[0]}>
         {/* Nav */}
@@ -342,6 +350,16 @@ function AddCar({ navigation }) {
             }}
           >
             Add Photos
+          </Text>
+          <Text
+            style={{
+              fontSize: RFPercentage(1.7),
+              marginTop: RFPercentage(0.6),
+              color: Colors.secondary,
+              fontFamily: "Poppins_400Regular",
+            }}
+          >
+            {imageLengthWarning}
           </Text>
           <Text
             style={{
