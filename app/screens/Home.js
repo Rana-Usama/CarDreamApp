@@ -1,20 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, ImageBackground, FlatList } from "react-native";
 import { RFPercentage } from "react-native-responsive-fontsize";
-import { Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
+import { fetchAllCars } from "../api/cars";
+import { useRoute } from "@react-navigation/native";
 
 // components
 import Screen from "../components/Screen";
 import InputField from "../components/common/InputField";
-import MyAppButton from "../components/common/MyAppButton";
+import LoadingIndicator from "../components/common/LoadingIndicator";
 
 // config
 import Colors from "../config/Colors";
-import { fetchAllCars } from "../api/cars";
-import LoadingModal from "../components/common/LoadingModal";
-import LoadingIndicator from "../components/common/LoadingIndicator";
-import { useRoute } from "@react-navigation/native";
 
 const governorateStates = [
   "Basra",
@@ -64,7 +60,7 @@ function Home(props) {
   }, [params]);
 
   useEffect(() => {
-    const filteredCars = allCars.filter(car => {
+    const filteredCars = allCars.filter((car) => {
       const stateCondition = selectedFilters.length === 0 || selectedFilters.includes(car.state);
       const carTypeCondition = selectedCarTypes.length === 0 || selectedCarTypes.includes(car.carType);
 
@@ -427,6 +423,7 @@ function Home(props) {
             keyExtractor={(_, index) => index.toString()}
             numColumns={2}
             columnWrapperStyle={{ gap: 15 }}
+            contentContainerStyle={{ paddingBottom: RFPercentage(2) }}
             ListEmptyComponent={
               indicator ? (
                 <LoadingIndicator show={true} />
@@ -579,51 +576,6 @@ function Home(props) {
               </TouchableOpacity>
             )}
           />
-          {/* {filteredCars.map((car, index) => (
-            <TouchableOpacity
-              onPress={() => props.navigation.navigate("CarDetails")}
-              key={index}
-              activeOpacity={0.8}
-              style={{
-                backgroundColor: "#ffff",
-                shadowColor: Colors.primary,
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.3,
-                shadowRadius: 2,
-                elevation: 3,
-                width: "48%",
-                justifyContent: "flex-start",
-                alignItems: "center",
-                height: RFPercentage(33.5),
-                borderRadius: RFPercentage(1.5),
-                marginTop: !index == 0 || !index == 1 ? RFPercentage(2) : null,
-              }}
-            >
-              <View style={{ width: "100%", overflow: "hidden", borderTopRightRadius: RFPercentage(1.5), borderTopLeftRadius: RFPercentage(1.5) }}>
-                <ImageBackground style={{ width: "100%", height: RFPercentage(20) }} source={{ uri: car.images[0] }}></ImageBackground>
-              </View>
-              <View style={{ marginTop: RFPercentage(0.8), width: "90%", justifyContent: "center", alignItems: "flex-start" }}>
-                <Text style={{ color: Colors.black, fontSize: RFPercentage(1.8), fontFamily: "Poppins_500Medium" }}>{car.carName}</Text>
-                <Text style={{ marginVertical: RFPercentage(0.5), color: Colors.primary, fontSize: RFPercentage(2), fontFamily: "Poppins_500Medium" }}>{`$${car.price}`}</Text>
-                <View style={{ flexDirection: "row", width: "100%", justifyContent: "space-between", alignItems: "center" }}>
-                  <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-                    <Image style={{ width: RFPercentage(2), height: RFPercentage(2) }} source={require("../../assets/Images/petrol.png")} />
-                    <Text style={{ marginLeft: RFPercentage(0.6), color: Colors.grey, fontSize: RFPercentage(1.6), fontFamily: "Poppins_400Regular" }}>{car.engineType}</Text>
-                  </View>
-                  <View style={{ width: "55%", flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
-                    <Image style={{ width: RFPercentage(2), height: RFPercentage(2) }} source={require("../../assets/Images/km.png")} />
-                    <Text style={{ marginLeft: RFPercentage(0.6), color: Colors.grey, fontSize: RFPercentage(1.6), fontFamily: "Poppins_400Regular" }}>{truncateText(car.kmDriver, 6)} KM</Text>
-                  </View>
-                </View>
-                <View style={{ marginTop: RFPercentage(0.6), flexDirection: "row", width: "100%", justifyContent: "space-between", alignItems: "center" }}>
-                  <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-                    <Image style={{ width: RFPercentage(2), height: RFPercentage(2) }} source={require("../../assets/Images/type.png")} />
-                    <Text style={{ marginLeft: RFPercentage(0.6), color: Colors.grey, fontSize: RFPercentage(1.6), fontFamily: "Poppins_400Regular" }}>{car.type}</Text>
-                  </View>
-                </View>
-              </View>
-            </TouchableOpacity>
-          ))} */}
         </View>
 
         {/* Listing */}

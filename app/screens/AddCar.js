@@ -5,18 +5,18 @@ import { Ionicons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import DropDownPicker from "react-native-dropdown-picker";
+import ToastManager, { Toast } from "toastify-react-native";
 
 // components
 import Screen from "../components/Screen";
 import InputField from "../components/common/InputField";
+import { uploadImage } from "../api/helpers";
+import LoadingModal from "../components/common/LoadingModal";
+import { addCar } from "../api/cars";
+import LoadingIndicator from "../components/common/LoadingIndicator";
 
 // config
 import Colors from "../config/Colors";
-import { uploadImage } from "../api/helpers";
-import LoadingModal from "../components/common/LoadingModal";
-import LoadingIndicator from "../components/common/LoadingIndicator";
-import { addCar } from "../api/cars";
-import ToastManager, {Toast} from "toastify-react-native";
 
 function AddCar({ navigation }) {
   const [selectedImages, setSelectedImages] = useState([]);
@@ -46,8 +46,8 @@ function AddCar({ navigation }) {
   const pickImages = async () => {
     try {
       if (imageLoading) {
-        Toast.warn("Please wait, while previous image is loading.")
-        return
+        Toast.warn("Please wait, while previous image is loading.");
+        return;
       }
 
       let result = await ImagePicker.launchImageLibraryAsync({
@@ -263,7 +263,7 @@ function AddCar({ navigation }) {
 
       const res = await addCar(data);
       console.log("resss", res);
-      Toast.success("Vehicle Successfully Added.")
+      Toast.success("Vehicle Successfully Added.");
       navigation.navigate("Home", { images: selectedImages[0] });
     } catch (error) {
       alert(error?.message);
@@ -274,7 +274,7 @@ function AddCar({ navigation }) {
 
   return (
     <Screen style={styles.screen}>
-      <ToastManager textStyle={{ fontSize: RFPercentage(2), maxWidth: '90%' }} />
+      <ToastManager textStyle={{ fontSize: RFPercentage(2), maxWidth: "90%" }} />
       <LoadingModal show={indicator} />
       <ScrollView style={{ width: "100%" }} contentContainerStyle={{ width: "100%", alignItems: "center" }} stickyHeaderIndices={[0]}>
         {/* Nav */}
